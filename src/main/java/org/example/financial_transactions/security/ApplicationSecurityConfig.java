@@ -28,7 +28,7 @@ public class ApplicationSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)   //CSRF protection is often disabled in stateless APIs or applications that rely on other mechanisms (like JWT tokens) for security.
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/**").hasRole("EMPLOYEE")
                         .anyRequest().authenticated())
