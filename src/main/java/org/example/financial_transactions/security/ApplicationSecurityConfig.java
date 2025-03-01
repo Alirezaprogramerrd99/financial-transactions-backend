@@ -27,9 +27,18 @@ public class ApplicationSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)   //CSRF protection is often disabled in stateless APIs or applications that rely on other mechanisms (like JWT tokens) for security.
+
+//        http
+//                .csrf(AbstractHttpConfigurer::disable)   //CSRF protection is often disabled in stateless APIs or applications that rely on other mechanisms (like JWT tokens) for security.
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("/**").hasRole("EMPLOYEE") // This rule states that any request to any path (/** matches all URLs) must have the role EMPLOYEE.
+//                        .anyRequest().authenticated()) // All other requests (not covered by /**) must be authenticated, meaning any user who is logged in can access them (but they must have valid credentials).
+//                .httpBasic(withDefaults()); // This enables HTTP Basic Authentication. Basic authentication sends the username and password with each request as part of the Authorization header.
+//        return http.build();  //This builds the final security configuration and returns a SecurityFilterChain object, which Spring Security uses to apply the defined security settings.
+
+        http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/**").hasRole("EMPLOYEE")
                         .anyRequest().authenticated())
                 .httpBasic(withDefaults());
