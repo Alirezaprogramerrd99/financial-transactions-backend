@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+
+  oracle-db:
+    image: gvenzl/oracle-free:latest # Pulls and runs the Oracle Database image from docker hub.
+    container_name: oracle-db
+    environment:
+      ORACLE_PASSWORD: oracle
+      ORACLE_DATABASE: FREE
+#      APP_USER: my_user
+#      APP_USER_PASSWORD: ${APP_USER_PASSWORD}
+    ports:
+      - "1521:1521"
+
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s system/$$ORACLE_PASSWORD@localhost:1521/FREE" ]
+#      test: ["CMD", "bash", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s my_user/${APP_USER_PASSWORD}@localhost:1521/FREE"]
+      interval: 10s        # Check every 10 seconds
+      timeout: 5s          # Fail the check if it takes longer than 5 seconds
+      retries: 5           # Mark as unhealthy after 5 failed checks
+      start_period: 30s    # Wait 30 seconds before starting health checks
+
+  app-service:
+    build: .
+    container_name: app-service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle-db:1521/FREE
+#      SPRING_DATASOURCE_USERNAME: my_user
+#      SPRING_DATASOURCE_PASSWORD: ${APP_USER_PASSWORD}
+
+      SPRING_DATASOURCE_USERNAME: system
+      SPRING_DATASOURCE_PASSWORD: oracle
+
+    depends_on:
+      oracle-db:
+        condition: service_healthy
