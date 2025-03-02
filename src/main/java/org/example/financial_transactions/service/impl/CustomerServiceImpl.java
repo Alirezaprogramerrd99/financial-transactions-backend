@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.financial_transactions.dao.CustomerRepository;
 import org.example.financial_transactions.exception.DuplicateException;
 import org.example.financial_transactions.exception.IdNotFoundException;
+import org.example.financial_transactions.exception.NationalCodeNotFoundException;
 import org.example.financial_transactions.model.Account;
 import org.example.financial_transactions.model.Admin;
 import org.example.financial_transactions.model.Customer;
@@ -39,6 +40,17 @@ public class CustomerServiceImpl implements ICustomerService {
         // setting the newly created account entity object for customer's account field and inserting a new customer into the database.
         customer.setAccount(account);
         repository.save(customer);
+    }
+
+    @Transactional
+    @Override
+    public Optional<Customer> getCustomerByNationalCode(String nationalCode){
+        Optional<Customer> existingCustomer = repository.findByNationalCode(nationalCode);
+
+        if (existingCustomer.isEmpty())
+            throw new NationalCodeNotFoundException(nationalCode);
+
+        return existingCustomer;
     }
 
     @Override
