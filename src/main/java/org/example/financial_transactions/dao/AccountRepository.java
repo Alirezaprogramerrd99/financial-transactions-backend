@@ -13,10 +13,17 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     Long generateAccountNumber();
 
 
-    @Query("""
-            select a.accountNumber from Account a left join a.customer c
-             where c.nationalCode=:nationalCode
-            """)
+//    @Query("""
+//            select a.accountNumber from Account a left join a.customer c
+//             where c.nationalCode=:nationalCode
+//            """)
+@Query("""
+        select a.accountNumber from Account a
+        left join a.customer c
+        left join a.admin adm
+        where c.nationalCode = :nationalCode
+        or adm.nationalCode = :nationalCode
+       """)
     String findAccountNumberByNationalCode(@Param("nationalCode") String nationalCode);
 
     @Query("""

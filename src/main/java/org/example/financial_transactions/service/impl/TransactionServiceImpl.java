@@ -100,6 +100,8 @@ public class TransactionServiceImpl implements ITransactionService {
     }
 
     private void increaseBalance(Account account, Double amount) {
+        //     account.setBalance(account.getBalance() + amount);  might be more efficent.
+
         Double balance = account.getBalance();
         balance += amount;
         account.setBalance(balance);
