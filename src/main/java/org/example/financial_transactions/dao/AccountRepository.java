@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Integer> {
-    @Query(value = "SELECT nextval('seq_account_number')", nativeQuery = true)
+    @Query(value = "SELECT seq_account_number.NEXTVAL FROM DUAL", nativeQuery = true)
     Long generateAccountNumber();
 
 

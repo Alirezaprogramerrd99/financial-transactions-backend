@@ -9,6 +9,7 @@ import org.example.financial_transactions.model.Account;
 import org.example.financial_transactions.model.Admin;
 import org.example.financial_transactions.model.Customer;
 import org.example.financial_transactions.model.History;
+import org.example.financial_transactions.model.dto.CustomerRequest;
 import org.example.financial_transactions.model.dto.CustomerUpdateRequest;
 import org.example.financial_transactions.model.enumutation.CustomerType;
 import org.example.financial_transactions.service.IAccountService;
@@ -30,16 +31,27 @@ public class CustomerServiceImpl implements ICustomerService {
 
     @Transactional
     @Override
-    public void registerCustomer(Customer customer) {
-        Optional<Customer> existingCustomer = repository.findByNationalCode(customer.getNationalCode());
-        existingCustomer.ifPresent(c -> {
-            throw new DuplicateException(c.getNationalCode());
-        });
+    public void registerCustomer(CustomerRequest customer) {
+        repository.findByNationalCode(customer.nationalCode())
+                .ifPresent(c -> {
+                    throw new DuplicateException(c.getNationalCode());
+                });
+
+        Customer newCustomer = new Customer();
+        newCustomer.setNationalCode(customer.nationalCode());
+        newCustomer.setName(customer.name());
+        newCustomer.setNationalCode(customer.nationalCode());
+        newCustomer.setAddress(customer.address());
+        newCustomer.setPhoneNumber(customer.phoneNumber());
+        newCustomer.setCustomerType(CustomerType.valueOf(customer.customerType()));
+        newCustomer.setEstablishmentDate(customer.establishmentDate());
+        newCustomer.setPostalCode(customer.postalCode());
+
+
         Account account = iAccountService.createAccount();
-        // below instructions hit two birds with one stone;
-        // setting the newly created account entity object for customer's account field and inserting a new customer into the database.
-        customer.setAccount(account);
-        repository.save(customer);
+        newCustomer.setAccount(account);
+
+        repository.save(newCustomer);
     }
 
     @Transactional

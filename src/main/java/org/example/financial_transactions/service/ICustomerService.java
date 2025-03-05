@@ -1,13 +1,14 @@
 package org.example.financial_transactions.service;
 
 import org.example.financial_transactions.model.Customer;
+import org.example.financial_transactions.model.dto.CustomerRequest;
 import org.example.financial_transactions.model.dto.CustomerUpdateRequest;
 
 import java.util.Optional;
 
 public interface ICustomerService {
 
-    void registerCustomer(Customer customer);
+    void registerCustomer(CustomerRequest customer);
 
     public Optional<Customer> getCustomerByNationalCode(String nationalCode);
 

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 @Service
@@ -27,6 +28,8 @@ public class AccountServiceImpl implements IAccountService {
 
     private final AccountRepository repository;
     private final IHistoryService iHistoryService;
+    private static final AtomicLong counter = new AtomicLong(1);
+
 
     @Override
     public Account createAccount() {
@@ -109,8 +112,8 @@ public class AccountServiceImpl implements IAccountService {
         iHistoryService.save(history);
     }
 
-    //generated with sequence DB functionality(see in sequence.sql)
-    private String generateUniqueAccountNumber() {
-        return String.format("%014d", repository.generateAccountNumber());
+    public String generateUniqueAccountNumber() {
+        long uniqueNumber = counter.getAndIncrement();
+        return String.format("%014d", uniqueNumber);
     } // generates a number(in string format) and pads it with necessary zeros.
 }

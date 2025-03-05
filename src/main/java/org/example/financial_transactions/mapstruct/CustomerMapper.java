@@ -5,9 +5,9 @@
  import org.mapstruct.Mapper;
  import org.mapstruct.factory.Mappers;
 
- @Mapper
- public interface CustomerMapper {
-     CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
-
-     Customer customerRequestToCustomer(CustomerRequest customerRequest);
- }
+// @Mapper(componentModel = "spring")
+// public interface CustomerMapper {
+//     CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
+//
+//     Customer customerRequestToCustomer(CustomerRequest customerRequest);
+// }
